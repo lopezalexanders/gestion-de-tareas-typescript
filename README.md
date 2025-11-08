@@ -1,0 +1,2 @@
+# gestion-de-tareas-typescript
+DESARROLLO DIRIGIDO POR ESPECIFICACIONES CON IA
