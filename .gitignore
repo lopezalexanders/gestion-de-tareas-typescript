@@ -1,0 +1,7 @@
+node_modules/
+backend/dist/
+backend/data/
+frontend/public/api/*.js.map
+frontend/public/components/*.js.map
+frontend/public/main.js.map
+*.sqlite
