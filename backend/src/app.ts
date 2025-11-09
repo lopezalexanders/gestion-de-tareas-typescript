@@ -2,7 +2,6 @@ import 'express-async-errors';
 import express from 'express';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
-import cors from 'cors';
 import pinoHttp from 'pino-http';
 
 import { appConfig } from './config/env.js';
@@ -11,6 +10,7 @@ import { requestIdMiddleware } from './middlewares/requestId.js';
 import { metricsMiddleware } from './observability/metrics.js';
 import routes from './routes/index.js';
 import { logger } from './observability/logger.js';
+import { createCorsMiddleware } from './middlewares/cors.js';
 
 const app = express();
 
@@ -18,7 +18,7 @@ app.use(express.json());
 app.use(requestIdMiddleware);
 app.use(metricsMiddleware);
 app.use(
-  cors({
+  createCorsMiddleware({
     origin: appConfig.corsOrigin,
     credentials: true,
   }),
