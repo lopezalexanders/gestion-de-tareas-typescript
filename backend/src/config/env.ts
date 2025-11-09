@@ -1,4 +1,43 @@
-import 'dotenv/config';
+import { existsSync, readFileSync } from 'node:fs';
+import path from 'node:path';
+
+const loadEnvFile = (fileName = '.env'): void => {
+  const filePath = path.resolve(process.cwd(), fileName);
+  if (!existsSync(filePath)) {
+    return;
+  }
+
+  const content = readFileSync(filePath, 'utf8');
+  for (const rawLine of content.split(/\r?\n/)) {
+    const line = rawLine.trim();
+    if (line.length === 0 || line.startsWith('#')) {
+      continue;
+    }
+
+    const match = rawLine.match(/^\s*([\w.-]+)\s*=\s*(.*)?\s*$/);
+    if (!match) {
+      continue;
+    }
+
+    const [, key, rawValue = ''] = match;
+    if (process.env[key] !== undefined) {
+      continue;
+    }
+
+    let value = rawValue;
+    if (value.startsWith('"') && value.endsWith('"')) {
+      value = value.slice(1, -1).replace(/\\n/g, '\n');
+    } else if (value.startsWith("'") && value.endsWith("'")) {
+      value = value.slice(1, -1);
+    } else {
+      value = value.trim().replace(/\s+#.*$/, '');
+    }
+
+    process.env[key] = value;
+  }
+};
+
+loadEnvFile();
 
 export interface AppConfig {
   port: number;
